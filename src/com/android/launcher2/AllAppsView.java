@@ -131,17 +131,17 @@ public class AllAppsView extends RSSurfaceView
         public static final int ROWS_PER_PAGE = 4;
 
         public static final int ICON_WIDTH_PX = 64;
-        public static final int ICON_TEXTURE_WIDTH_PX = 128;
+        public static final int ICON_TEXTURE_WIDTH_PX = 64;
 
         public static final int ICON_HEIGHT_PX = 64;
-        public static final int ICON_TEXTURE_HEIGHT_PX = 128;
+        public static final int ICON_TEXTURE_HEIGHT_PX = 64;
 
         public int SCREEN_WIDTH_PX;
         public int SCREEN_HEIGHT_PX;
 
         public void recompute(int w, int h) {
-            SCREEN_WIDTH_PX = 480;
-            SCREEN_HEIGHT_PX = 800;
+            SCREEN_WIDTH_PX = 320;
+            SCREEN_HEIGHT_PX = 480;
         }
     }
 
@@ -1007,8 +1007,8 @@ public class AllAppsView extends RSSurfaceView
             mHomeButtonPressed.uploadToTexture(0);
             mParams.homeButtonWidth = 76;
             mParams.homeButtonHeight = 68;
-            mParams.homeButtonTextureWidth = 128;
-            mParams.homeButtonTextureHeight = 128;
+            mParams.homeButtonTextureWidth = 64;
+            mParams.homeButtonTextureHeight = 64;
 
             mState.homeButtonId = mHomeButtonNormal.getID();
 
@@ -1247,7 +1247,7 @@ public class AllAppsView extends RSSurfaceView
         void initTouchState() {
             int width = getWidth();
             int height = getHeight();
-            int cellHeight = 145;//iconsSize / Defines.ROWS_PER_PAGE;
+            int cellHeight = 100;//iconsSize / Defines.ROWS_PER_PAGE;
             int cellWidth = width / Defines.COLUMNS_PER_PAGE;
 
             int centerY = (height / 2);

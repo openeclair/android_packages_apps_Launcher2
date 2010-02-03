@@ -254,7 +254,8 @@ int positionStrip(float row, float column, int isTop, float p, int isText)
 {
     float mat1[16];
     float x = 0.5f * (column - 1.5f);
-    float scale = 72.f * 3 / getWidth();
+    //float scale = 72.f * 3 / getWidth();
+	float scale = 110.f / getWidth();
 
     if (isTop) {
         matrixLoadTranslate(mat1, x, 0.8f, 0.f);
@@ -293,7 +294,7 @@ draw_home_button()
     float x = (SCREEN_WIDTH_PX - params->homeButtonTextureWidth) / 2;
     float y = (g_Zoom - 1.f) * params->homeButtonTextureHeight;
 
-    y -= 30; // move the house to the edge of the screen as it doesn't fill the texture.
+	y -= 0;
     drawSpriteScreenspace(x, y, 0, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
 }
 
@@ -305,10 +306,10 @@ void drawFrontGrid(float rowOffset, float p)
     int intRowOffset = rowOffset;
     float rowFrac = rowOffset - intRowOffset;
     float colWidth = getWidth() / 4;
-    float rowHeight = colWidth + 25.f;
+    float rowHeight = colWidth + 15.f;
     float yoff = h - ((h - (rowHeight * 4.f)) / 2);
 
-    yoff -= 110;
+    yoff -= 45;
 
     int row, col;
     int iconNum = intRowOffset * 4;
@@ -324,22 +325,22 @@ void drawFrontGrid(float rowOffset, float p)
             }
 
             if (iconNum >= 0) {
-                float x = colWidth * col - ((128 - colWidth) / 2);
+                float x = colWidth * col - ((64 - colWidth) / 2);
 
                 if ((y >= ymin) && (y <= ymax)) {
                     setColor(1.f, 1.f, 1.f, 1.f);
                     if (state->selectedIconIndex == iconNum && !p) {
                         bindTexture(NAMED_PFTexNearest, 0, state->selectedIconTexture);
-                        drawSpriteScreenspace(x, y, 0, 128, 128);
+                        drawSpriteScreenspace(x, y, 0, 64, 64);
                     }
 
                     bindTexture(NAMED_PFTexNearest, 0, loadI32(ALLOC_ICON_IDS, iconNum));
                     if (!p) {
-                        drawSpriteScreenspace(x, y, 0, 128, 128);
+                        drawSpriteScreenspace(x, y, 0, 64, 64);
                     } else {
-                        float px = ((x + 64) - (getWidth() / 2)) / (getWidth() / 2);
-                        float py = ((y + 64) - (getHeight() / 2)) / (getWidth() / 2);
-                        float d = 64.f / (getWidth() / 2);
+                        float px = ((x + 32) - (getWidth() / 2)) / (getWidth() / 2);
+                        float py = ((y + 32) - (getHeight() / 2)) / (getWidth() / 2);
+                        float d = 32.f / (getWidth() / 2);
                         px *= p + 1;
                         py *= p + 1;
                         drawQuadTexCoords(px - d, py - d, -p, 0, 1,
@@ -354,7 +355,7 @@ void drawFrontGrid(float rowOffset, float p)
                     float a = maxf(0, 1.f - p * 5.f);
                     setColor(1.f, 1.f, 1.f, a);
                     bindTexture(NAMED_PFTexNearest, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
-                    drawSpriteScreenspace(x, y - 44, 0,
+                    drawSpriteScreenspace(x - 32, y - 22, 0,
                                params->bubbleBitmapWidth, params->bubbleBitmapHeight);
                 }
             }
@@ -373,9 +374,9 @@ void drawStrip(float row, float column, int isTop, int iconNum, float p)
     drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
 
     if (isTop) {
-        offset = positionStrip(row - 0.72f, column, isTop, p, 1);
+        offset = positionStrip(row - 0.65f, column, isTop, p, 1);
     } else {
-        offset = positionStrip(row + 0.73f, column, isTop, p, 1);
+        offset = positionStrip(row + 0.50f, column, isTop, p, 1);
     }
     if (offset < -20) return;
     if (offset > 200) return;
@@ -427,7 +428,7 @@ main(int launchID)
 {
     // Compute dt in seconds.
     int newTime = uptimeMillis();
-    g_DT = (newTime - g_LastTime) / 1000.f;
+    g_DT = (newTime - g_LastTime) / 750.f;
     g_LastTime = newTime;
 
     if (!g_DrawLastFrame) {
@@ -469,7 +470,7 @@ main(int launchID)
         }
         return lastFrame(0);
     } else {
-        pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
+        pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom - 0.15f);
     }
 
     // icons & labels
@@ -490,9 +491,8 @@ main(int launchID)
 
     bindProgramFragment(NAMED_PFTexMip);
 
-
-    drawTop(g_PosPage, 1-g_Zoom);
-    drawBottom(g_PosPage, 1-g_Zoom);
+    //drawTop(g_PosPage, 1-g_Zoom);
+    //drawBottom(g_PosPage, 1-g_Zoom);
 
     {
         float mat1[16];
