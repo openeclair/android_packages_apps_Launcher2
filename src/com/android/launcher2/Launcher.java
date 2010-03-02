@@ -50,6 +50,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.provider.LiveFolders;
+import android.provider.Settings;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -407,6 +408,10 @@ public final class Launcher extends Activity
 
         mPaused = false;
 
+        this.setRequestedOrientation(
+        		Settings.System.getInt(this.getContentResolver(), "launcher_orientation", 1) == 0 ?
+        				ActivityInfo.SCREEN_ORIENTATION_NOSENSOR : ActivityInfo.SCREEN_ORIENTATION_USER);
+        
         if (mRestoring) {
             mWorkspaceLoading = true;
             mModel.startLoader(this, true);
