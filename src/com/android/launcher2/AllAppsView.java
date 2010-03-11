@@ -121,29 +121,48 @@ public class AllAppsView extends RSSurfaceView
     private float mVelocity;
     private AAMessage mMessageProc;
 
+    /**
+     *Create logic to determine screen size and display width, height, Columns per page and rows per page accordingly.
+    */
+    static Canvas canvas = new Canvas();
+    static int height = canvas.getHeight();
+    static int width = canvas.getWidth();
+    public static int cpp1 = 4;
+    public static int rpp1 = 4;
+    public static int cpp2 = 3;
+    public static int rpp2 = 5;
+
+	
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
         public static final int ALLOC_STATE = 1;
         public static final int ALLOC_ICON_IDS = 3;
         public static final int ALLOC_LABEL_IDS = 4;
-
-        public static final int COLUMNS_PER_PAGE = 4;
-        public static final int ROWS_PER_PAGE = 4;
-
+        public static int COLUMNS_PER_PAGE;
+        public static int ROWS_PER_PAGE;
+        
         public static final int ICON_WIDTH_PX = 64;
         public static final int ICON_TEXTURE_WIDTH_PX = 64;
 
         public static final int ICON_HEIGHT_PX = 64;
         public static final int ICON_TEXTURE_HEIGHT_PX = 64;
 
-        public int SCREEN_WIDTH_PX;
-        public int SCREEN_HEIGHT_PX;
+        public static int SCREEN_WIDTH_PX;
+        public static int SCREEN_HEIGHT_PX;
 
         public void recompute(int w, int h) {
-            SCREEN_WIDTH_PX = 320;
-            SCREEN_HEIGHT_PX = 480;
+            SCREEN_WIDTH_PX = width;
+            SCREEN_HEIGHT_PX = height;
+            if (height > width){
+            	COLUMNS_PER_PAGE = cpp1;
+            	ROWS_PER_PAGE = rpp1;
+            } else {
+            	COLUMNS_PER_PAGE = cpp2;
+            	ROWS_PER_PAGE = rpp2;
+            }
         }
     }
+
 
     public AllAppsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -1454,5 +1473,6 @@ public class AllAppsView extends RSSurfaceView
         }
     }
 }
+
 
 
