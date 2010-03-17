@@ -311,7 +311,7 @@ void drawFrontGrid(float rowOffset, float p)
     yoff -= 110;
 
     int row, col;
-    int iconNum = intRowOffset * 4;
+    int iconNum = intRowOffset * 5;
     float ymax = yoff + rowHeight;
     float ymin = yoff - (3 * rowHeight) - 70;
     float gridTop = yoff -3;
