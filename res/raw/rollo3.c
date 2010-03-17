@@ -322,7 +322,7 @@ void drawFrontGrid(float rowOffset, float p)
     for (row = 0; row < 5; row++) {
         float y = yoff - ((-rowFrac + row) * rowHeight);
 
-        for (col=0; col < 4; col++) {
+        for (col=0; col < 5; col++) {
             if (iconNum >= state->iconCount) {
                 return;
             }
