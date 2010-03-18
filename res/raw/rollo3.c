@@ -408,7 +408,7 @@ void drawBottom(float rowOffset, float p)
     pos -= rowOffset - intRowOffset;
 
     int row, col;
-    int iconNum = (intRowOffset + 3) * 5;
+    int iconNum = (intRowOffset + 3) * 4;
     while (1) {
         for (col=0; col < 5; col++) {
             if (iconNum >= state->iconCount) {
