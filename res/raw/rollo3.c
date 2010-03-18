@@ -253,7 +253,7 @@ void updatePos() {
 int positionStrip(float row, float column, int isTop, float p, int isText)
 {
     float mat1[16];
-    float x = 0.5f * (column - 1.5f);
+    float x = 0.5f * 4/5 * (column - 2.f) ;
     float scale = 72.f * 3 / getWidth();
 
     if (isTop) {
