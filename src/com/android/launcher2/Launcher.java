@@ -152,11 +152,6 @@ public final class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME = "launcher.rename_folder";
     // Type: long
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
-    // Type: boolean
-    private static final String RUNTIME_INITIAL_CREATION = "launcher.initial_creation";
-
-    private boolean initialCreation = true;
-    private int currentOrientation;
 
     static final int APPWIDGET_HOST_ID = 1024;
 
@@ -281,7 +276,6 @@ public final class Launcher extends Activity
             writeConfiguration(this, localeConfiguration);
             AppInfoCache.flush();
         }
-	currentOrientation = getWindowManager().getDefaultDisplay().getOrientation();
     }
 
     private static class LocaleConfiguration {
@@ -533,8 +527,6 @@ public final class Launcher extends Activity
             mFolderInfo = mModel.getFolderById(this, mFolders, id);
             mRestoring = true;
         }
-
-	initialCreation = savedState.getBoolean(RUNTIME_INITIAL_CREATION, true);
     }
 
     /**
@@ -922,9 +914,6 @@ public final class Launcher extends Activity
             outState.putBoolean(RUNTIME_STATE_PENDING_FOLDER_RENAME, true);
             outState.putLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID, mFolderInfo.id);
         }
-
-	if (currentOrientation != getWindowManager().getDefaultDisplay().getOrientation() && mAllAppsGrid.IsAllocationListCreated())
-	    outState.putBoolean(RUNTIME_INITIAL_CREATION, false);
     }
 
     @Override
@@ -1845,10 +1834,9 @@ public final class Launcher extends Activity
     }
 
     void showAllApps(boolean animated) {
-	if (animated)
-            mWorkspace.hideWallpaper(true);
+        mWorkspace.hideWallpaper(true);
         mAllAppsGrid.zoom(1.0f, animated);
-        mWorkspace.hide();
+        //mWorkspace.hide();
 
         mWorkspace.startFading(false);
 
@@ -1857,10 +1845,7 @@ public final class Launcher extends Activity
         
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
-        mHandleView.setVisibility(View.GONE);
-        mModel.setModelAllAppsVisible(true);
-        mPreviousView.setVisibility(View.GONE);
-        mNextView.setVisibility(View.GONE);
+        //mHandleView.setVisibility(View.GONE);
     }
 
     /**
@@ -1902,14 +1887,9 @@ public final class Launcher extends Activity
         if (mAllAppsGrid.isVisible()) {
             mAllAppsGrid.zoom(0.0f, animated);
             mAllAppsGrid.setFocusable(false);
-            mWorkspace.show();
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
             mWorkspace.startFading(true);
             mWorkspace.hideWallpaper(false);
-            mModel.setModelAllAppsVisible(false);
-            mHandleView.setVisibility(View.VISIBLE);
-            mPreviousView.setVisibility(View.VISIBLE);
-            mNextView.setVisibility(View.VISIBLE);
 
             // TODO: fade these two too
             /*
@@ -2292,9 +2272,5 @@ public final class Launcher extends Activity
         mModel.dumpState();
         mAllAppsGrid.dumpState();
         Log.d(TAG, "END launcher2 dump state");
-    }
-
-    public boolean isInitialCreation() {
-        return initialCreation;
     }
 }
