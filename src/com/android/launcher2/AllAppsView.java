@@ -121,8 +121,6 @@ public class AllAppsView extends RSSurfaceView
     private float mVelocity;
     private AAMessage mMessageProc;
 
-    private boolean mCreatedList = false;
-
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
         public static final int ALLOC_STATE = 1;
@@ -1066,15 +1064,6 @@ public class AllAppsView extends RSSurfaceView
             mIcons = new Allocation[count];
             mIconIds = new int[allocCount];
             mAllocIconIds = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
-	    if (mLauncher.isInitialCreation()) {
-	        Allocation.createAllocationList(mRS, count);
-		if (count > 0)
-		    mCreatedList = true;
-            }
-	    else {
-		if (count > 0)
-		    mCreatedList = true;
-            }
 
             Element ie8888 = Element.RGBA_8888(mRS);
 
@@ -1128,12 +1117,8 @@ public class AllAppsView extends RSSurfaceView
 
         private void createAppIconAllocations(int index, ApplicationInfo item) {
             Bitmap bitmap = item.iconBitmap;
-	    if (mLauncher.isInitialCreation()) {
-                mIcons[index] = Allocation.createFromBitmap(mRS, bitmap, Element.RGBA_8888(mRS), true, index);
-                frameBitmapAllocMips(mIcons[index], bitmap.getWidth(), bitmap.getHeight());
-	    }
-	    else
-                mIcons[index] = Allocation.createFromBitmap(mRS, bitmap, Element.RGBA_8888(mRS), true, index);
+            mIcons[index] = Allocation.createFromBitmap(mRS, bitmap, Element.RGBA_8888(mRS), true);
+            frameBitmapAllocMips(mIcons[index], bitmap.getWidth(), bitmap.getHeight());
 
             mIconIds[index] = mIcons[index].getID();
         }
@@ -1176,7 +1161,6 @@ public class AllAppsView extends RSSurfaceView
             System.arraycopy(mIcons, index, mIcons, dest, count);
             System.arraycopy(mIconIds, index, mIconIds, dest, count);
 
-	    Allocation.addToAllocation(mRS, index);
             createAppIconAllocations(index, item);
 
             if (mHasSurface) {
@@ -1197,8 +1181,6 @@ public class AllAppsView extends RSSurfaceView
 
             System.arraycopy(mIcons, src, mIcons, index, count);
             System.arraycopy(mIconIds, src, mIconIds, index, count);
-
-	    Allocation.removeFromAllocation(mRS, index);
 
             mRollo.mState.iconCount--;
             final int last = mState.iconCount;
@@ -1402,10 +1384,6 @@ public class AllAppsView extends RSSurfaceView
             Log.d(TAG, "mRollo.mParams.homeButtonTextureWidth=" + mParams.homeButtonTextureWidth);
             Log.d(TAG, "mRollo.mParams.homeButtonTextureHeight=" + mParams.homeButtonTextureHeight);
         }
-    }
-
-    public boolean IsAllocationListCreated() {
-        return mCreatedList;
     }
 
     public void dumpState() {
