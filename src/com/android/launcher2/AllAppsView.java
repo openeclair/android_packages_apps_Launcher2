@@ -891,7 +891,7 @@ public class AllAppsView extends RSSurfaceView
 
                 float t = 0.1f * ct;
                 float ds = 0.08f;
-                tm.setColor(l, l, l, 0.99f);
+                tm.setColor(l, l, l, 0);
                 tm.setTexture(ds, t);
                 tm.addVertex(-0.5f, y, z);
                 tm.setTexture(1 - ds, t);
@@ -1000,8 +1000,8 @@ public class AllAppsView extends RSSurfaceView
             mHomeButtonPressed.uploadToTexture(0);
             mParams.homeButtonWidth = 76;
             mParams.homeButtonHeight = 68;
-            mParams.homeButtonTextureWidth = 128;
-            mParams.homeButtonTextureHeight = 128;
+            mParams.homeButtonTextureWidth = 64;
+            mParams.homeButtonTextureHeight = 64;
 
             mState.homeButtonId = mHomeButtonNormal.getID();
 

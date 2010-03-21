@@ -293,7 +293,7 @@ draw_home_button()
     float x = (SCREEN_WIDTH_PX - params->homeButtonTextureWidth) / 2;
     float y = (g_Zoom - 1.f) * params->homeButtonTextureHeight;
 
-    // fills fine on MDPI -- y -= 30; // move the house to the edge of the screen as it doesn't fill the texture.
+    // y -= 30; // move the house to the edge of the screen as it doesn't fill the texture.
     drawSpriteScreenspace(x, y, 0, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
 }
 
@@ -308,7 +308,7 @@ void drawFrontGrid(float rowOffset, float p)
     float rowHeight = (colWidth * 5/4) + 15.f;
     float yoff = h - ((h - (rowHeight * 4.f)) / 2);
 
-    yoff -= 45;
+    yoff -= 50;
 
     int row, col;
     int iconNum = intRowOffset * 5;
@@ -328,7 +328,7 @@ void drawFrontGrid(float rowOffset, float p)
             }
 
             if (iconNum >= 0) {
-                float x = colWidth * col - ((32 - colWidth) / 2);
+                float x = colWidth * col - ((64 - colWidth) / 2);
 
                 if ((y >= ymin) && (y <= ymax)) {
                     float iconY = y - 20;
