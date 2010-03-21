@@ -129,15 +129,15 @@ public class AllAppsView extends RSSurfaceView
         public static final int COLUMNS_PER_PAGE = 5;
         public static final int ROWS_PER_PAGE = 4;
 
-        public static final int ICON_TEXTURE_WIDTH_PX = 128;
-        public static final int ICON_TEXTURE_HEIGHT_PX = 128;
+        public static final int ICON_TEXTURE_WIDTH_PX = 64;
+        public static final int ICON_TEXTURE_HEIGHT_PX = 64;
 
         public int SCREEN_WIDTH_PX;
         public int SCREEN_HEIGHT_PX;
 
         public void recompute(int w, int h) {
-            SCREEN_WIDTH_PX = 480;
-            SCREEN_HEIGHT_PX = 800;
+            SCREEN_WIDTH_PX = 320;
+            SCREEN_HEIGHT_PX = 480;
         }
     }
 
