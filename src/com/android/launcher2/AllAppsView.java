@@ -891,7 +891,7 @@ public class AllAppsView extends RSSurfaceView
 
                 float t = 0.1f * ct;
                 float ds = 0.08f;
-                tm.setColor(l, l, l, 0);
+                tm.setColor(l, l, l, 0.99f);
                 tm.setTexture(ds, t);
                 tm.addVertex(-0.5f, y, z);
                 tm.setTexture(1 - ds, t);
