@@ -24,6 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.renderscript.Allocation;
 import android.renderscript.Dimension;
 import android.renderscript.Element;
@@ -53,7 +54,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
-
 public class AllAppsView extends RSSurfaceView
         implements View.OnClickListener, View.OnLongClickListener, DragSource {
     private static final String TAG = "Launcher.AllAppsView";
@@ -73,6 +73,8 @@ public class AllAppsView extends RSSurfaceView
     private static final int SELECTION_ICONS = 1;
     private static final int SELECTION_HOME = 2;
 
+    private static final int DEFAULT_LAUNCHER_COLUMNS = 5;
+    
     private Launcher mLauncher;
     private DragController mDragController;
 
@@ -112,6 +114,8 @@ public class AllAppsView extends RSSurfaceView
     private int mDownIconIndex = -1;
     private int mCurrentIconIndex = -1;
 
+    private int mLauncherColumns = DEFAULT_LAUNCHER_COLUMNS;
+    
     private boolean mShouldGainFocus;
 
     private boolean mHaveSurface = false;
@@ -130,8 +134,8 @@ public class AllAppsView extends RSSurfaceView
         public static final int ALLOC_LABEL_IDS = 4;
         public static final int ALLOC_VP_CONSTANTS = 5;
 
-        public static final int COLUMNS_PER_PAGE = 4;
-        public static final int ROWS_PER_PAGE = 4;
+        public static int COLUMNS_PER_PAGE = 5;
+        public static int ROWS_PER_PAGE = 5;
 
         public static final int ICON_WIDTH_PX = 64;
         public static final int ICON_TEXTURE_WIDTH_PX = 74;
@@ -141,7 +145,7 @@ public class AllAppsView extends RSSurfaceView
         public static final int ICON_TEXTURE_HEIGHT_PX = 74;
         public static final int SELECTION_TEXTURE_HEIGHT_PX = 74 + 20;
     }
-
+    
     public AllAppsView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusable(true);
@@ -157,6 +161,8 @@ public class AllAppsView extends RSSurfaceView
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
 
         mRS = createRenderScript(true);
+        mLauncherColumns = Settings.System.getInt(mContext.getContentResolver(), 
+                Settings.System.LAUNCHER_COLUMN_NUMBER, DEFAULT_LAUNCHER_COLUMNS);
     }
 
     /**
@@ -480,7 +486,7 @@ public class AllAppsView extends RSSurfaceView
         int action = ev.getAction();
         switch (action) {
         case MotionEvent.ACTION_DOWN:
-            if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
+            if (y > mRollo.mTouchYBorders[mLauncherColumns]) {
                 mTouchTracking = TRACKING_HOME;
                 mRollo.setHomeSelected(SELECTED_PRESSED);
                 mRollo.mState.save();
@@ -514,7 +520,7 @@ public class AllAppsView extends RSSurfaceView
         case MotionEvent.ACTION_MOVE:
         case MotionEvent.ACTION_OUTSIDE:
             if (mTouchTracking == TRACKING_HOME) {
-                mRollo.setHomeSelected(y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]
+                mRollo.setHomeSelected(y > mRollo.mTouchYBorders[mLauncherColumns]
                         ? SELECTED_PRESSED : SELECTED_NONE);
                 mRollo.mState.save();
             } else if (mTouchTracking == TRACKING_FLING) {
@@ -553,7 +559,7 @@ public class AllAppsView extends RSSurfaceView
         case MotionEvent.ACTION_CANCEL:
             if (mTouchTracking == TRACKING_HOME) {
                 if (action == MotionEvent.ACTION_UP) {
-                    if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
+                    if (y > mRollo.mTouchYBorders[mLauncherColumns]) {
                         reallyPlaySoundEffect(SoundEffectConstants.CLICK);
                         mLauncher.closeAllApps(true);
                     }
@@ -878,6 +884,8 @@ public class AllAppsView extends RSSurfaceView
             public int homeButtonHeight;
             public int homeButtonTextureWidth;
             public int homeButtonTextureHeight;
+
+            public int launcherCols;
         }
 
         class State extends BaseAlloc {
@@ -1067,8 +1075,8 @@ public class AllAppsView extends RSSurfaceView
         }
 
         private void initGl() {
-            mTouchXBorders = new int[Defines.COLUMNS_PER_PAGE+1];
-            mTouchYBorders = new int[Defines.ROWS_PER_PAGE+1];
+            mTouchXBorders = new int[7+1];
+            mTouchYBorders = new int[5+1];
         }
 
         private void initData() {
@@ -1095,6 +1103,8 @@ public class AllAppsView extends RSSurfaceView
             mParams.homeButtonHeight = 68;
             mParams.homeButtonTextureWidth = 128;
             mParams.homeButtonTextureHeight = 128;
+       
+            mParams.launcherCols = mLauncherColumns;
 
             mState.homeButtonId = mHomeButtonNormal.getID();
 
@@ -1295,23 +1305,28 @@ public class AllAppsView extends RSSurfaceView
         void initTouchState() {
             int width = getWidth();
             int height = getHeight();
-            int cellHeight = 145;//iconsSize / Defines.ROWS_PER_PAGE;
-            int cellWidth = width / Defines.COLUMNS_PER_PAGE;
 
-            int centerY = (height / 2);
-            mTouchYBorders[0] = centerY - (cellHeight * 2);
-            mTouchYBorders[1] = centerY - cellHeight;
-            mTouchYBorders[2] = centerY;
-            mTouchYBorders[3] = centerY + cellHeight;
-            mTouchYBorders[4] = centerY + (cellHeight * 2);
+	    if (getWidth()>getHeight()) {
+			Defines.COLUMNS_PER_PAGE = 7;
+	    }
+        else if (mParams.launcherCols == 5){
+			Defines.COLUMNS_PER_PAGE = 5;
+		}
+		else {
+			Defines.COLUMNS_PER_PAGE = 4;
+		}
+            int cellHeight = 580 / (mParams.launcherCols); //iconsSize / Defines.ROWS_PER_PAGE;
+            int cellWidth = width / (Defines.COLUMNS_PER_PAGE);
+			
+            for (int i = 0; i < (Defines.ROWS_PER_PAGE+1); i++) {
+                mTouchYBorders[i] = (64)+ (i * cellHeight);
+            }
 
-            int centerX = (width / 2);
-            mTouchXBorders[0] = 0;
-            mTouchXBorders[1] = centerX - (width / 4);
-            mTouchXBorders[2] = centerX;
-            mTouchXBorders[3] = centerX + (width / 4);
-            mTouchXBorders[4] = width;
+            for (int i = 0; i < (Defines.COLUMNS_PER_PAGE+1); i++) {
+                mTouchXBorders[i] = i * cellWidth;
+            }
         }
+
 
         void fling() {
             mInvokeFling.execute();
@@ -1328,8 +1343,6 @@ public class AllAppsView extends RSSurfaceView
         }
 
         int chooseTappedIcon(int x, int y, float pos) {
-            // Adjust for scroll position if not zero.
-            y += (pos - ((int)pos)) * (mTouchYBorders[1] - mTouchYBorders[0]);
 
             int col = -1;
             int row = -1;
@@ -1350,8 +1363,7 @@ public class AllAppsView extends RSSurfaceView
                 return -1;
             }
 
-            int index = (((int)pos) * Defines.COLUMNS_PER_PAGE)
-                    + (row * Defines.ROWS_PER_PAGE) + col;
+            int index = ((row + (int)pos) * Defines.COLUMNS_PER_PAGE) + col;
 
             if (index >= mState.iconCount) {
                 return -1;
@@ -1500,5 +1512,6 @@ public class AllAppsView extends RSSurfaceView
         }
     }
 }
+
 
 
